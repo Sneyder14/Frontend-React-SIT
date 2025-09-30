@@ -1,0 +1,70 @@
+@import "tailwindcss";
+@plugin "flyonui";
+@import "flyonui/variants.css";
+@source "./node_modules/flyonui/flyonui.js";
+
+
+body {
+ 
+   @apply font-sans antialiased bg-gray-50 text-black;
+
+}
+
+@layer utilities {
+  @keyframes fade {
+    0% {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .animate-fade {
+    animation: fade 0.4s ease-in-out;
+  }
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-6px);
+  }
+
+  50% {
+    transform: translateX(6px);
+  }
+
+  75% {
+    transform: translateX(-6px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-shake {
+  animation: shake 0.3s ease-in-out;
+}
+@media (max-width: 768px) {
+  .tablet-flex-col {
+    display: flex;
+    flex-direction: column;
+  }
+  .padding-tablet{
+    padding: 0px 2px 2px 0px;
+  }
+}
+.scroll-left {
+  direction: rtl;
+}
+.scroll-left > * {
+  direction: ltr;
+}
