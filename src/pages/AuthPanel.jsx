@@ -143,8 +143,8 @@ export default function AuthPanel() {
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-100 px-4">
             <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl p-8 border border-gray-100 transition-all duration-300">
                 <div className="mb-6 text-center">
-                    <h2 className="text-2xl font-bold text-indigo-700">
-                        {mode === "login" ? "Bienvenido de nuevo" : "Crea tu cuenta"}
+                    <h2 className="text-2xl font-bold text-indigo-700 uppercase font-[poppins]">
+                        {mode === "login" ? "Bienvenido" : "Crea tu cuenta"}
                     </h2>
                     <p className="text-sm text-gray-500 mt-1">
                         {mode === "login"

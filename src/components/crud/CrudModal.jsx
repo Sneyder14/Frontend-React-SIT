@@ -12,7 +12,6 @@ export default function CrudModal({
     const [errors, setErrors] = useState({});
     const [success, setSuccess] = useState(false);
 
-    // Detecta el campo ID dinámico
     const idField = initialData
         ? Object.keys(initialData).find((key) => key.toLowerCase().endsWith("_id"))
         : null;
@@ -26,8 +25,6 @@ export default function CrudModal({
         !isNaN(Number(initialData[idField]))
     );
 
-
-
     useEffect(() => {
         const cleanForm = initialData ? { ...initialData } : {};
         if (!isEditing && idField) {
@@ -38,8 +35,6 @@ export default function CrudModal({
         setErrors({});
         setSuccess(false);
     }, [initialData]);
-
-
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -113,7 +108,7 @@ export default function CrudModal({
         const isValidId = id !== undefined && id !== null && id !== "";
 
         if (!isValidId) {
-            delete cleanForm.academic_cut_grade_id; 
+            delete cleanForm.academic_cut_grade_id;
         }
 
         onSubmit(cleanForm);
@@ -135,9 +130,11 @@ export default function CrudModal({
 
     if (!visible) return null;
 
+    const useGridLayout = fields.length > 6;
+
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
-            <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative animate-fade">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 padding-modal">
+            <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 relative animate-fade max-h-[90vh] overflow-y-auto">
                 <button
                     onClick={onClose}
                     className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
@@ -156,7 +153,7 @@ export default function CrudModal({
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-3">
+                <form onSubmit={handleSubmit} className={`${useGridLayout ? "grid grid-cols-2 gap-4" : "space-y-3"}`}>
                     {fields.map(({ name, label, type, options }) => (
                         <div key={name}>
                             <label className="block text-sm font-medium text-gray-700">{label}</label>
@@ -183,7 +180,7 @@ export default function CrudModal({
                                     value={form[name] ?? ""}
                                     onChange={handleChange}
                                     rows={3}
-                                    className={`w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${errors[name]
+                                    className={`w-full mt-1 px-2 py-2 border rounded-md focus:outline-none focus:ring-2 ${errors[name]
                                         ? "border-red-500 ring-red-300"
                                         : "border-gray-300 focus:ring-indigo-500"
                                         }`}
@@ -219,16 +216,18 @@ export default function CrudModal({
                         </div>
                     ))}
 
-                    <button
-                        type="submit"
-                        disabled={!isFormValid}
-                        className={`w-full py-2 rounded-md transition ${isFormValid
-                            ? "bg-indigo-600 text-white hover:bg-indigo-700"
-                            : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                            }`}
-                    >
-                        Guardar
-                    </button>
+                    <div className={`${useGridLayout ? "col-span-2" : ""}`}>
+                        <button
+                            type="submit"
+                            disabled={!isFormValid}
+                            className={`w-full py-2 rounded-md transition ${isFormValid
+                                ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                }`}
+                        >
+                            Guardar
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

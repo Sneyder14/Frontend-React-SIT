@@ -189,7 +189,7 @@ export default function CrudTable({
     };
 
     return (
-        <section className="py-6 px-2">
+        <section className="py-2 ">
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-center gap-3 mb-4">
                 <input
@@ -205,7 +205,7 @@ export default function CrudTable({
                     </div>
                 )}
 
-                <div className="relative flex text-left gap-3">
+                <div className="relative flex text-left gap-2">
                     <button
                         onClick={() => {
                             const emptyData = {};
