@@ -89,8 +89,8 @@ export default function AuthPanel() {
 
             const url =
                 mode === "login"
-                    ? "http://127.0.0.1:8000/api/auth/login/"
-                    : "http://127.0.0.1:8000/api/auth/register/";
+                    ? "http://72.61.0.205:8000/api/auth/login/"
+                    : "http://72.61.0.205:8000/api/auth/register/";
 
             const payload =
                 mode === "login"

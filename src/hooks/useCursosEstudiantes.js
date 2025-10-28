@@ -3,7 +3,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { getNextCourseStudentId } from "../utils/idGenerators";
 
-const API_URL = "http://127.0.0.1:8000/api/academics/course-students/";
+const API_URL = "http://72.61.0.205:8000/api/academics/course-students/";
 
 export default function useCursoEstudiantes() {
     const [cursoEstudiantes, setCursoEstudiantes] = useState([]);

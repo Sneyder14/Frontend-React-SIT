@@ -29,11 +29,11 @@ export default function useStudentData() {
           cursosRes,
           ejerciciosDeApoyoRes,
         ] = await Promise.all([
-          axios.get("http://127.0.0.1:8000/api/academics/tasks", { headers }),
-          axios.get("http://127.0.0.1:8000/api/academics/tutoring-topics", { headers }),
-          axios.get("http://127.0.0.1:8000/api/academics/task-grades", { headers }),
-          axios.get("http://127.0.0.1:8000/api/academics/course-students", { headers }),
-          axios.get("http://127.0.0.1:8000/api/academics/support-exercises", { headers }),
+          axios.get("http://72.61.0.205:8000/api/academics/tasks", { headers }),
+          axios.get("http://72.61.0.205:8000/api/academics/tutoring-topics", { headers }),
+          axios.get("http://72.61.0.205:8000/api/academics/task-grades", { headers }),
+          axios.get("http://72.61.0.205:8000/api/academics/course-students", { headers }),
+          axios.get("http://72.61.0.205:8000/api/academics/support-exercises", { headers }),
         ]);
 
         setData({

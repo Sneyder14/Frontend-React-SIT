@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-const API_URL = "http://127.0.0.1:8000/api/academics/support-exercises/";
+const API_URL = "http://72.61.0.205:8000/api/academics/support-exercises/";
 
 export default function useEjerciciosApoyo() {
     const [ejercicios, setEjercicios] = useState([]);

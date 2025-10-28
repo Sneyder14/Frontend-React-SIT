@@ -5,7 +5,7 @@ export const refreshAccessToken = async () => {
     if (!refresh) return null;
 
     try {
-        const response = await axios.post("http://127.0.0.1:8000/api/auth/refresh/", {
+        const response = await axios.post("http://72.61.0.205:8000/auth/refresh/", {
             refresh,
         });
         const newAccess = response.data.access;
