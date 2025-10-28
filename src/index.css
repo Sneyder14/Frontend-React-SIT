@@ -1,13 +1,13 @@
 @import "tailwindcss";
-@plugin "flyonui";
 @import "flyonui/variants.css";
+
+@plugin "flyonui";
 @source "./node_modules/flyonui/flyonui.js";
 
 
-body {
- 
-   @apply font-sans antialiased bg-gray-50 text-black;
 
+body {
+  @apply font-sans antialiased bg-gray-50 text-black;
 }
 
 @layer utilities {
@@ -53,12 +53,14 @@ body {
 .animate-shake {
   animation: shake 0.3s ease-in-out;
 }
+
 @media (max-width: 768px) {
   .tablet-flex-col {
     display: flex;
     flex-direction: column;
   }
-  .padding-tablet{
+
+  .padding-tablet {
     padding: 0px 2px 2px 0px;
   }
 }
@@ -68,9 +70,11 @@ body {
     padding: 0px 10px;
   }
 }
+
 .scroll-left {
   direction: rtl;
 }
-.scroll-left > * {
+
+.scroll-left>* {
   direction: ltr;
 }
