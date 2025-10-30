@@ -28,8 +28,15 @@ export default function AuthPanel() {
     const navigate = useNavigate();
     const { login } = useAuth();
 
+    // Correos que deben conservar mayúsculas al hacer login
+    const excepcionesCorreo = {
+        "admin@sit.com": "Admin@sit.com",
+        "Ngutierrez-2021b@corhuila.edu.co": "ngutierrez-2021b@corhuila.edu.co"
+    };
+
     const validate = () => {
         const newErrors = {};
+
         if (mode === "register") {
             if (!form.name.trim()) newErrors.name = "Nombre requerido";
             if (!form.last_name.trim()) newErrors.last_name = "Apellido requerido";
@@ -40,20 +47,31 @@ export default function AuthPanel() {
                 newErrors.confirm_password = "Las contraseñas no coinciden";
             }
         }
+
         if (!form.email.trim()) {
             newErrors.email = "Correo requerido";
         } else if (!/\S+@\S+\.\S+/.test(form.email)) {
             newErrors.email = "Correo inválido";
         }
+
         if (!form.password.trim()) {
             newErrors.password = "Contraseña requerida";
-        } else if (form.password.length < 8) {
-            newErrors.password = "Mínimo 8 caracteres";
-        } else if (!/[A-Z]/.test(form.password)) {
-            newErrors.password = "Debe contener al menos una mayúscula";
-        } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(form.password)) {
-            newErrors.password = "Debe contener al menos un carácter especial";
+        } else {
+            const erroresPassword = [];
+            if (form.password.length < 8) {
+                erroresPassword.push("Mínimo 8 caracteres");
+            }
+            if (!/[A-Z]/.test(form.password)) {
+                erroresPassword.push("Debe contener al menos una mayúscula");
+            }
+            if (!/[!@#$%^&*(),.?":{}|<>]/.test(form.password)) {
+                erroresPassword.push("Debe contener al menos un carácter especial");
+            }
+            if (erroresPassword.length > 0) {
+                newErrors.password = erroresPassword.join(". ");
+            }
         }
+
         return newErrors;
     };
 
@@ -80,7 +98,8 @@ export default function AuthPanel() {
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
             setShakeForm(true);
-            setModalError("Por favor corrige los campos marcados");
+            const erroresModal = Object.values(newErrors).join(". ");
+            setModalError(erroresModal);
             return;
         }
 
@@ -92,18 +111,29 @@ export default function AuthPanel() {
                     ? "http://72.61.0.205:8000/api/auth/login/"
                     : "http://72.61.0.205:8000/api/auth/register/";
 
+            const correoIngresado = form.email.trim().toLowerCase();
+            const correoFinal = excepcionesCorreo[correoIngresado] || correoIngresado;
+
             const payload =
                 mode === "login"
-                    ? { email: form.email.toLowerCase(), password: form.password }
+                    ? {
+                        email: correoFinal,
+                        password: form.password,
+                    }
                     : {
                         name: form.name,
                         last_name: form.last_name,
-                        email: form.email.toLowerCase(),
+                        email: correoIngresado,
                         password: form.password,
                     };
 
+            console.log("Payload enviado:", payload);
+
             const response = await axios.post(url, payload);
             const { tokens, user } = response.data;
+
+            user.email = user.email.toLowerCase(); 
+
             const accessToken = tokens?.access;
             const refreshToken = tokens?.refresh;
 
@@ -229,7 +259,6 @@ export default function AuthPanel() {
                     visible={loginSuccess}
                     onClose={() => setLoginSuccess(false)}
                 />
-
             </div>
         </div>
     );
