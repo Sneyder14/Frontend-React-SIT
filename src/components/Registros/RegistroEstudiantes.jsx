@@ -1,5 +1,6 @@
 import useEstudiantes from "../../hooks/useEstudiantes";
 import CrudTable from "../crud/CrudTable";
+import StatusModal from "../StatusModal";
 
 const columns = [
     { key: "student_id", label: "ID" },
@@ -19,6 +20,7 @@ export default function RegistroEstudiantes() {
         deleteEstudiante,
         loading,
     } = useEstudiantes();
+    
 
     return (
         <CrudTable

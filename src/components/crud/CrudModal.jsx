@@ -134,7 +134,7 @@ export default function CrudModal({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 padding-modal">
-            <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 relative animate-fade max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 relative animate-fade max-h-[90vh] overflow-y-auto font-[roboto]">
                 <button
                     onClick={onClose}
                     className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
@@ -142,7 +142,7 @@ export default function CrudModal({
                     <X size={20} />
                 </button>
 
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                <h2 className="text-xl font-semibold text-gray-800 mb-4 font-[roboto]">
                     {isEditing ? "Editar registro" : "Crear nuevo registro"}
                 </h2>
 
@@ -222,7 +222,7 @@ export default function CrudModal({
                             disabled={!isFormValid}
                             className={`w-full py-2 rounded-md transition ${isFormValid
                                 ? "bg-indigo-600 text-white hover:bg-indigo-700"
-                                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                : "bg-gray-300 text-gray-500 cursor-not-allowed font-[roboto]"
                                 }`}
                         >
                             Guardar

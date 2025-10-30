@@ -2,6 +2,9 @@ import { useState, useMemo } from "react";
 import CrudModal from "./CrudModal";
 import StatusModal from "../StatusModal";
 import ConfirmModal from "./ConfirmModal";
+import DeleteIcon from '@mui/icons-material/Delete';
+import CreateIcon from '@mui/icons-material/Create';
+
 
 export default function CrudTable({
     data,
@@ -12,6 +15,8 @@ export default function CrudTable({
     onDelete,
     searchKeys = [],
     dateFilters = [],
+    readOnly = false,
+    renderCell,
 }) {
     const [modalVisible, setModalVisible] = useState(false);
     const [editingData, setEditingData] = useState(null);
@@ -26,6 +31,34 @@ export default function CrudTable({
     const [feedbackMessage, setFeedbackMessage] = useState("");
     const [confirmVisible, setConfirmVisible] = useState(false);
     const [pendingDeleteId, setPendingDeleteId] = useState(null);
+
+    //manejo De Estados
+
+    const [detailModalVisible, setDetailModalVisible] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
+
+    const truncateFields = ["description", "notes"];
+    const truncateText = (text, maxLength = 60) =>
+        text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+
+    const getStatusClass = (status) => {
+        switch (status?.toLowerCase()) {
+            case "active":
+                return "bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-semibold";
+            case "a":
+                return "bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-semibold";
+            case "i":
+                return "bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-semibold";
+            case "scheduled":
+                return "bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-semibold";
+            case "complete":
+                return "bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-semibold";
+            case "closed":
+                return "bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs font-semibold";
+            default:
+                return "bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-semibold";
+        }
+    };
 
 
 
@@ -76,7 +109,7 @@ export default function CrudTable({
         try {
             if (creating) {
                 const cleanData = { ...formData };
-                delete cleanData.academic_cut_grade_id; 
+                delete cleanData.academic_cut_grade_id;
 
                 await onCreate(cleanData);
                 setFeedbackType("success");
@@ -153,114 +186,61 @@ export default function CrudTable({
     };
 
 
-
-    const exportData = (format) => {
-        let content = "";
-
-        switch (format) {
-            case "csv":
-                content = [
-                    columns.map((col) => col.label).join(","),
-                    ...data.map((row) => columns.map((col) => row[col.key]).join(","))
-                ].join("\n");
-                break;
-
-            case "json":
-                content = JSON.stringify(data, null, 2);
-                break;
-
-            case "txt":
-                content = data.map((row) =>
-                    columns.map((col) => `${col.label}: ${row[col.key]}`).join(" | ")
-                ).join("\n");
-                break;
-
-            case "sql":
-                content = data.map((row) => {
-                    const keys = columns.map((col) => col.key).join(", ");
-                    const values = columns.map((col) => `'${row[col.key]}'`).join(", ");
-                    return `INSERT INTO tabla (${keys}) VALUES (${values});`;
-                }).join("\n");
-                break;
-        }
-
-        console.log(`Exportado como ${format}:\n`, content);
-        setExportOpen(false);
-    };
-
     return (
-        <section className="py-2 ">
+        <section className="py-2">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-3 mb-4">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-3 mb-4 font-[roboto]">
                 <input
                     type="text"
                     placeholder="Buscar..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full sm:w-64 px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-[#101828]"
+                    className="w-full md:w-[400px] sm:w-64 px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-[#685CFE] font-[roboto]"
                 />
                 {filteredData.length > 0 && (
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-gray-900 font-[roboto] font-semibold text-center">
                         Mostrando {filteredData.length} resultado{filteredData.length > 1 ? "s" : ""}
                     </div>
                 )}
-
-                <div className="relative flex text-left gap-2">
-                    <button
-                        onClick={() => {
-                            const emptyData = {};
-                            fields.forEach((field) => {
-                                emptyData[field.name] = "";
-                            });
-                            setCreating(true);
-                            setEditingData(emptyData);
-                            setModalVisible(true);
-                        }}
-                        className="bg-[#101828] text-white px-4 py-2 rounded-md hover:bg-indigo-700"
-                    >
-                        Crear nuevo
-                    </button>
-
-
-                    <button
-                        className="bg-gray-100 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-200"
-                        onClick={() => setExportOpen(!exportOpen)}
-                    >
-                        Exportar como ▾
-                    </button>
-
-                    {exportOpen && (
-                        <div className="absolute right-0 mt-11 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
-                            <ul className="py-1 text-sm text-gray-700">
-                                <li onClick={() => exportData("csv")} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">📄 Exportar CSV</li>
-                                <li onClick={() => exportData("json")} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">🧾 Exportar JSON</li>
-                                <li onClick={() => exportData("txt")} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">📃 Exportar TXT</li>
-                                <li onClick={() => exportData("sql")} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">🗃️ Exportar SQL</li>
-                            </ul>
-                        </div>
-                    )}
-                </div>
+                {!readOnly && (
+                    <div className="relative flex text-left gap-2">
+                        <button
+                            onClick={() => {
+                                const emptyData = {};
+                                fields.forEach((field) => {
+                                    emptyData[field.name] = "";
+                                });
+                                setCreating(true);
+                                setEditingData(emptyData);
+                                setModalVisible(true);
+                            }}
+                            className="bg-[#685CFE] text-white px-4 py-2 rounded-md hover:bg-green-700 hover:text-white font-[roboto] uppercase"
+                        >
+                            Crear nuevo
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* Tabla */}
             <div className="overflow-x-auto rounded-lg shadow-md border border-gray-300">
-                <table className="min-w-full divide-y divide-gray-300">
-                    <thead className="bg-gray-200">
+                <table className="min-w-full divide-y divide-gray-300 font-[roboto]">
+                    <thead className="bg-gray-200 text-center">
                         <tr>
                             {columns.map(({ key, label }) => (
                                 <th
                                     key={key}
                                     onClick={() => toggleSort(key)}
-                                    className="px-4 py-3 text-left text-sm font-semibold text-[#101828] cursor-pointer select-none"
+                                    className="px-4 py-3 text-center text-sm font-semibold text-[#685CFE] cursor-pointer select-none font-[roboto]"
                                 >
-                                    <span className="flex items-center">
+                                    <span className="flex items-center justify-center gap-1">
                                         {label}
                                         <svg
                                             className={`w-4 h-4 ml-1 transition-transform ${sortConfig.key === key
-                                                ? sortConfig.direction === "asc"
-                                                    ? "rotate-180"
-                                                    : ""
-                                                : "opacity-30"
+                                                    ? sortConfig.direction === "asc"
+                                                        ? "rotate-180"
+                                                        : ""
+                                                    : "opacity-30"
                                                 }`}
                                             fill="none"
                                             viewBox="0 0 24 24"
@@ -276,57 +256,92 @@ export default function CrudTable({
                                     </span>
                                 </th>
                             ))}
-                            <th className="px-4 py-3 text-left text-sm font-semibold text-[#101828]">Acciones</th>
+                            {!readOnly && (
+                                <th className="px-4 py-3 text-sm font-semibold text-[#685CFE] font-[roboto]">
+                                    Acciones
+                                </th>
+                            )}
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                         {sortedData.map((item, idx) => (
-                            <tr key={idx} className="hover:bg-gray-50">
+                            <tr
+                                key={idx}
+                                className="hover:bg-gray-50 cursor-pointer font-[roboto]"
+                                onClick={() => {
+                                    setSelectedItem(item);
+                                    setDetailModalVisible(true);
+                                }}
+                            >
                                 {columns.map(({ key }) => (
-                                    <td key={key} className="px-4 py-3 whitespace-nowrap text-sm text-gray-800">
-                                        {item[key]}
-                                    </td>
-                                ))}
-                                <td className="flex gap-2 justify-end px-4 py-3">
-                                    <button
-                                        onClick={() => {
-                                            setCreating(false);
-                                            setEditingData(item);
-                                            setModalVisible(true);
-                                        }}
-                                        className="text-indigo-600 hover:underline"
-                                    >
-                                        Editar
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            const idField = Object.keys(item).find((key) =>
-                                                key.toLowerCase().endsWith("_id")
-                                            );
-                                            setPendingDeleteId(item[idField]);
-                                            setConfirmVisible(true);
-                                        }}
-                                        className="text-red-600 hover:underline"
-                                    >
-                                        Eliminar
-                                    </button>
+                                    <td
+  key={key}
+  className="px-4 py-3 max-w-[200px] truncate whitespace-nowrap text-sm text-gray-800 text-center font-[roboto]"
+>
+  {renderCell
+    ? renderCell(key, item[key])
+    : truncateFields.includes(key) ? (
+        <span className="text-indigo-600 hover:underline">
+          {truncateText(item[key] ?? "")}
+        </span>
+      ) : ["status", "estado_participacion", "participation_status"].includes(key) ||
+        ["active", "complete", "inactive"].includes(String(item[key]).toLowerCase()) ? (
+        <span className={getStatusClass(item[key])}>{item[key]}</span>
+      ) : (
+        item[key]
+      )}
+</td>
 
-                                </td>
+                                ))}
+                                {!readOnly && (
+                                    <td className="px-4 py-3 whitespace-nowrap text-center">
+                                        <div className="flex justify-center gap-4">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setCreating(false);
+                                                    setEditingData(item);
+                                                    setModalVisible(true);
+                                                }}
+                                                title="Editar"
+                                                className="hover:text-indigo-700 transition"
+                                            >
+                                                <CreateIcon fontSize="medium" style={{ color: "#4F46E5" }} />
+                                            </button>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    const idField = Object.keys(item).find((key) =>
+                                                        key.toLowerCase().endsWith("_id")
+                                                    );
+                                                    setPendingDeleteId(item[idField]);
+                                                    setConfirmVisible(true);
+                                                }}
+                                                title="Eliminar"
+                                                className="hover:text-red-700 transition"
+                                            >
+                                                <DeleteIcon fontSize="medium" style={{ color: "#DC2626" }} />
+                                            </button>
+                                        </div>
+                                    </td>
+                                )}
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
 
-            {/* Modal */}
-            <CrudModal
-                visible={modalVisible}
-                onClose={() => setModalVisible(false)}
-                onSubmit={handleSubmit}
-                fields={fields}
-                initialData={editingData}
-            />
-            {confirmVisible && (
+            {/* Modales */}
+            {!readOnly && (
+                <CrudModal
+                    visible={modalVisible}
+                    onClose={() => setModalVisible(false)}
+                    onSubmit={handleSubmit}
+                    fields={fields}
+                    initialData={editingData}
+                />
+            )}
+            {!readOnly && confirmVisible && (
                 <ConfirmModal
                     visible={confirmVisible}
                     message="Este registro será eliminado permanentemente. ¿Deseas continuar?"
@@ -334,8 +349,6 @@ export default function CrudTable({
                     onConfirm={() => handleDelete(pendingDeleteId)}
                 />
             )}
-
-
             {feedbackVisible && (
                 <StatusModal
                     type={feedbackType}
@@ -344,7 +357,29 @@ export default function CrudTable({
                     onClose={() => setFeedbackVisible(false)}
                 />
             )}
-
+            {detailModalVisible && selectedItem && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+                    <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-xl max-h-[85vh] overflow-y-auto border border-gray-200">
+                        <h3 className="text-xl font-bold text-[#111827] mb-5 text-center">Detalles del registro</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm text-gray-700">
+                            {columns.map(({ key, label }) => (
+                                <div key={key} className="flex flex-col">
+                                    <span className="font-bold text-[#111827]">{label}</span>
+                                    <span className="mt-1 text-gray-800 break-words">{String(selectedItem[key] ?? "")}</span>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="mt-6 flex justify-center">
+                            <button
+                                onClick={() => setDetailModalVisible(false)}
+                                className="px-5 py-2 bg-[#182130] text-white rounded-md hover:bg-[#685CFE] transition font-medium"
+                            >
+                                CERRAR
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </section>
     );
 }

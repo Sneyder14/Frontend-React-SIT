@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import Sidebar from "../components/sidebar";
-import Header from "../components/Header";
+import Sidebar from "../components/sidebar/sidebar";
+import Header from '../components/Header/Header';
 
 // Vistas estudiante
 import Tareas from "../components/estudiantes/Tareas";
@@ -21,6 +21,16 @@ export default function Layout() {
   const [vistaActual, setVistaActual] = useState("dashboard");
   const { role, user } = useAuth();
 
+  useEffect(() => {
+    if (role === "student") {
+      setVistaActual("dashboard:student");
+    } else if (role === "admin") {
+      setVistaActual("dashboard");
+    }
+  }, [role]);
+
+
+
   let vistaRenderizada;
 
   console.log("Rol actual:", role);
@@ -35,7 +45,7 @@ export default function Layout() {
     );
   } else if (role === "student") {
     switch (vistaActual) {
-      case "dashboard":
+      case "dashboard:student":
         vistaRenderizada = <DashboardEstudiante />;
         break;
       case "tareas":
@@ -92,7 +102,7 @@ export default function Layout() {
 
 
   return (
-    <div className="flex h-screen bg-[#FFFF] font-[poppins] relative">
+    <div className="flex h-screen bg-layout dark:bg-fonfoLayout font-[roboto] relative bg-[#FFFF]">
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-30 transition-opacity duration-300 ease-in-out md:hidden"
@@ -107,7 +117,7 @@ export default function Layout() {
         vistaActual={vistaActual}
       />
 
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col font-[roboto]">
         <Header setSidebarOpen={setSidebarOpen} />
         <div className="flex-1 relative overflow-hidden">
           <div

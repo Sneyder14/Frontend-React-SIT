@@ -10,6 +10,7 @@ export default function AdminStudent() {
   const [loading, setLoading] = useState(false);
   const [searchId, setSearchId] = useState("");
 
+  // 🔄 Cargar todos los usuarios
   const fetchStudents = async () => {
     const token = localStorage.getItem("token");
     try {
@@ -20,7 +21,7 @@ export default function AdminStudent() {
         },
       });
       setStudents(response.data);
-      setFiltered(response.data); // inicializa con todos
+      setFiltered(response.data);
     } catch (err) {
       toast.error("Error al cargar usuarios");
       console.error(err);
@@ -29,6 +30,7 @@ export default function AdminStudent() {
     }
   };
 
+  // 🔍 Filtrar por ID
   const handleSearch = (id) => {
     setSearchId(id);
     if (id.trim() === "") {
@@ -41,6 +43,7 @@ export default function AdminStudent() {
     }
   };
 
+  // ➕ Crear nuevo estudiante
   const createStudent = async (data) => {
     const token = localStorage.getItem("token");
     const payload = { ...data, id_role: 2, is_active: true };
@@ -57,14 +60,15 @@ export default function AdminStudent() {
       }
     ).then((response) => {
       setStudents((prev) => [...prev, response.data]);
-      handleSearch(searchId); // actualiza búsqueda
+      handleSearch(searchId);
     });
   };
 
-  const updateStudent = async (id, data) => {
+  // ✏️ Actualizar estudiante
+  const updateStudent = async (id_user, data) => {
     const token = localStorage.getItem("token");
     await toast.promise(
-      axios.put(`${API_URL}${id}/`, data, {
+      axios.put(`${API_URL}${id_user}/`, data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -76,16 +80,17 @@ export default function AdminStudent() {
       }
     ).then((response) => {
       setStudents((prev) =>
-        prev.map((user) => (user.id === id ? response.data : user))
+        prev.map((user) => (user.id_user === id_user ? response.data : user))
       );
       handleSearch(searchId);
     });
   };
 
-  const deleteStudent = async (id) => {
+  // 🗑️ Eliminar estudiante
+  const deleteStudent = async (id_user) => {
     const token = localStorage.getItem("token");
     await toast.promise(
-      axios.delete(`${API_URL}${id}/`, {
+      axios.delete(`${API_URL}${id_user}/`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -96,15 +101,17 @@ export default function AdminStudent() {
         error: "Error al eliminar usuario",
       }
     ).then(() => {
-      setStudents((prev) => prev.filter((user) => user.id !== id));
+      setStudents((prev) => prev.filter((user) => user.id_user !== id_user));
       handleSearch(searchId);
     });
   };
 
+  // ⏱️ Cargar al montar
   useEffect(() => {
     fetchStudents();
   }, []);
 
+  // 📦 Exportar funciones y estado
   return {
     students: filtered,
     loading,

@@ -65,7 +65,7 @@ export default function useProfesores() {
             {
                 loading: "Eliminando profesor...",
                 success: "Profesor eliminado",
-                error: "Error al eliminar profesor",
+                error: "El profesor Tiene Cursos Asignados",
             }
         ).then(() => {
             setProfesores((prev) => prev.filter((p) => p.teacher_id !== teacher_id));

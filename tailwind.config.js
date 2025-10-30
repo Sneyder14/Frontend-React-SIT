@@ -7,12 +7,12 @@ export default {
     "./src/**/*.{js,jsx}",
     "node_modules/flowbite-react/**/*.{js,jsx}",
   ],
+  darkMode: "class",
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Inter", ...fontFamily.sans],
-        inter: ["Inter", "sans-serif"],
-        poppins: ["Poppins", "sans-serif"],
+        roboto: ['Roboto', 'sans-serif'],
+        monse: ['Montserrat', 'sans-serif'],
       },
     },
   },

@@ -64,7 +64,7 @@ export default function useEstudiantes() {
             {
                 loading: "Eliminando estudiante...",
                 success: "Estudiante eliminado",
-                error: "Error al eliminar estudiante",
+                error: "El estudiante tiene tareas asignadas.",
             }
         ).then(() => {
             setEstudiantes((prev) => prev.filter((e) => e.student_id !== id));

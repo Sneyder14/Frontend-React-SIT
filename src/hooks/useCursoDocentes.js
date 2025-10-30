@@ -25,8 +25,17 @@ export default function useCursoDocentes() {
     };
 
     const createCursoDocente = async (data) => {
+        const cleanData = {
+            course_id: Number(data.course_id),
+            teacher_id: Number(data.teacher_id),
+            assignment_date: data.assignment_date || null,
+            status: data.status || null,
+        };
+
+        console.log("Payload limpio:", cleanData);
+
         await toast.promise(
-            axios.post(API_URL, data, {
+            axios.post(API_URL, cleanData, {
                 headers: { Authorization: `Bearer ${token}` },
             }),
             {
@@ -38,6 +47,7 @@ export default function useCursoDocentes() {
             setCursoDocentes((prev) => [...prev, res.data]);
         });
     };
+
 
     const updateCursoDocente = async (id, data) => {
         await toast.promise(

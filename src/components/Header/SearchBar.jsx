@@ -10,7 +10,7 @@ export default function SearchBar({ className = "" }) {
                 type="text"
                 placeholder="Buscar..."
                 className="w-full pl-10 pr-4 py-2 text-sm text-[#101828] border-none outline-none transition-all duration-300 
-                focus:ring-0 ease-in-out"
+                focus:ring-0 ease-in-out font-[roboto]"
             />
         </div>
     );

@@ -94,11 +94,11 @@ export default function AuthPanel() {
 
             const payload =
                 mode === "login"
-                    ? { email: form.email, password: form.password }
+                    ? { email: form.email.toLowerCase(), password: form.password }
                     : {
                         name: form.name,
                         last_name: form.last_name,
-                        email: form.email,
+                        email: form.email.toLowerCase(),
                         password: form.password,
                     };
 
@@ -140,10 +140,10 @@ export default function AuthPanel() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-100 px-4">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-100 px-4 font-[roboto]">
             <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl p-8 border border-gray-100 transition-all duration-300">
                 <div className="mb-6 text-center">
-                    <h2 className="text-2xl font-bold text-indigo-700 uppercase font-[poppins]">
+                    <h2 className="text-2xl font-bold text-indigo-700 uppercase font-[roboto]">
                         {mode === "login" ? "Bienvenido" : "Crea tu cuenta"}
                     </h2>
                     <p className="text-sm text-gray-500 mt-1">

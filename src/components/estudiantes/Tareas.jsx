@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import useStudentData from "../../hooks/useStudentData";
 import TablaInteractiva from "../estudiantes/TablaInteractiva";
-import { useNotificaciones } from "../../context/NotificacionesContext";
+
 
 export default function Tareas() {
     const { tareas, loading, error } = useStudentData();
@@ -19,7 +19,7 @@ export default function Tareas() {
     ];
 
     if (loading) return <div className="p-6 text-gray-500">Cargando tareas...</div>;
-    if (error) return <div className="p-6 text-red-500">{error}</div>;
+    if (error) return <div className="p-6 text-red-500 font-[roboto]">{error}</div>;
 
     return <TablaInteractiva columns={columns} data={tareas} titulo="Tareas asignadas" />;
 }

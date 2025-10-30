@@ -18,6 +18,7 @@ export default function useTareasEstudiante() {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setTareas(res.data);
+            console.log("Tareas desde API:", res.data);
         } catch (err) {
             toast.error("Error al cargar tareas");
             console.error(err);

@@ -5,9 +5,9 @@
 @source "./node_modules/flyonui/flyonui.js";
 
 
-
 body {
   @apply font-sans antialiased bg-gray-50 text-black;
+  font-family: 'Roboto', sans-serif;
 }
 
 @layer utilities {

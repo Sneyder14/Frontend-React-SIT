@@ -33,7 +33,7 @@ export default function RegistroEstudiantes() {
             fields={fields}
             onCreate={createStudent}
             onUpdate={updateStudent}
-            onDelete={deleteStudent}
+            onDelete={(user) => deleteStudent(user.id_user)}
             searchKeys={["id_user", "name", "email"]}
         />
     );

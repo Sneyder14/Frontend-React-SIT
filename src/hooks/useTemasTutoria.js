@@ -64,7 +64,7 @@ export default function useTemasTutoria() {
             {
                 loading: "Eliminando tema...",
                 success: "Tema eliminado",
-                error: "Error al eliminar tema",
+                error: "El Tema Tiene Asignado Una Tutoria",
             }
         ).then(() => {
             setTemas((prev) => prev.filter((t) => t.tutoring_topic_id !== id));
