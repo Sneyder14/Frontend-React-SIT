@@ -31,9 +31,9 @@ export default function RegistroPrediccionesModelo() {
                 const enriched = predicciones.map((row) => {
                     const nota = parseFloat(row.n_final_pred);
                     let etiqueta = "";
-                    if (nota >= 0.0 && nota <= 2.9) etiqueta = "Bajo";
-                    else if (nota >= 3.0 && nota <= 4.0) etiqueta = "Medio";
-                    else if (nota >= 4.1 && nota <= 5.0) etiqueta = "Alto";
+                    if (nota >= 0.0 && nota <= 2.9) etiqueta = "Desempeño Bajo";
+                    else if (nota >= 3.0 && nota <= 4.0) etiqueta = "Desempeño Medio";
+                    else if (nota >= 4.1 && nota <= 5.0) etiqueta = "Desempeño Alto";
 
                     const relacion = relaciones.find(
                         r => r.course_student_id === row.course_student_id
@@ -45,7 +45,7 @@ export default function RegistroPrediccionesModelo() {
                     );
 
                     if (!usuario) {
-                        console.warn("⚠️ Usuario no encontrado para student_id:", studentId);
+                        console.warn("Usuario no encontrado para student_id:", studentId);
                     }
 
                     return {
@@ -58,7 +58,7 @@ export default function RegistroPrediccionesModelo() {
                 });
 
                 const filtered = enriched.filter(row =>
-                    ["Bajo", "Medio"].includes(row.etiqueta_desempeno)
+                    ["Desempeño Bajo", "Desempeño Medio"].includes(row.etiqueta_desempeno)
                 );
 
                 setData(filtered);
@@ -86,11 +86,11 @@ export default function RegistroPrediccionesModelo() {
 
     const getDesempenoClass = (etiqueta) => {
         switch (etiqueta) {
-            case "Bajo":
+            case "Desempeño Bajo":
                 return "bg-red-100 text-red-700";
-            case "Medio":
+            case "Desempeño Medio":
                 return "bg-yellow-100 text-yellow-700";
-            case "Alto":
+            case "Desempeño Alto":
                 return "bg-green-100 text-green-700";
             default:
                 return "bg-gray-100 text-gray-700";
