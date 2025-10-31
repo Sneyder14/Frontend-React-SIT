@@ -16,6 +16,7 @@ export default function useCursoEstudiantes() {
             const res = await axios.get(API_URL, {
                 headers: { Authorization: `Bearer ${token}` },
             });
+
             setCursoEstudiantes(res.data);
         } catch (err) {
             toast.error("Error al cargar estudiantes por curso");
@@ -27,7 +28,7 @@ export default function useCursoEstudiantes() {
 
     const createCursoEstudiante = async (data) => {
         const cleanData = { ...data };
-        cleanData.course_student_id = getNextCourseStudentId(cursoEstudiantes); 
+        cleanData.course_student_id = getNextCourseStudentId(cursoEstudiantes);
 
 
         console.log("Datos enviados:", cleanData);

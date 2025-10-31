@@ -24,7 +24,7 @@ export default function AdminDashboard() {
 
     axios
       .all([
-        axios.get("http://72.61.0.205:8000/api/academics/teachers/", {
+        axios.get("http://72.61.0.205:8000/api/auth/users/", {
           headers: { Authorization: `Bearer ${token}` },
         }),
         axios.get("http://72.61.0.205:8000/api/academics/courses/", {
@@ -55,6 +55,7 @@ export default function AdminDashboard() {
         console.error("Error al cargar estadísticas del dashboard");
       });
   }, []);
+
 
   const dashboardCards = [
     { title: "Usuarios registrados", value: stats.usuarios, icon: <FiUsers />, color: "indigo" },

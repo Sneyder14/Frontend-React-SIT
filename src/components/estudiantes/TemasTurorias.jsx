@@ -1,9 +1,9 @@
-import useStudentData from "../../hooks/useStudentData";
+
+import useSupportTopics from "../../hooks/useSupportTopics";
 import TablaInteractiva from "./TablaInteractiva";
 
 export default function TemasTutorias() {
-
-    const { temas, loading, error } = useStudentData();
+    const { temas, loading, error } = useSupportTopics();
 
     const columns = [
         { accessorKey: "topic", header: "Tema" },
@@ -14,5 +14,5 @@ export default function TemasTutorias() {
     if (loading) return <div className="p-6 text-gray-500">Cargando temas de apoyo...</div>;
     if (error) return <div className="p-6 text-red-500">{error}</div>;
 
-    return <TablaInteractiva columns={columns} data={temas} titulo="Temas de Tutoria" />;
+    return <TablaInteractiva columns={columns} data={temas} titulo="Temas de Tutoría" />;
 }

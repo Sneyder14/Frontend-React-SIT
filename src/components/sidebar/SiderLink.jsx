@@ -12,21 +12,21 @@ export default function SiderLink({
     setSidebarOpen(false);
   };
 
+
+  const isVisibleActive = active && expanded;
+
   return (
     <button
       onClick={handleClick}
       className={`flex items-center gap-3 p-2 rounded-lg w-full text-left duration-300 ease-in-out
-        ${
-          active
-            ? "bg-[#685CFE] font-semibold shadow-md"
-            : "hover:bg-[#685CFE]"
-        } text-[#FFFFFF]`}
+        ${isVisibleActive ? "bg-[#685CFE] font-semibold shadow-md" : "hover:bg-[#685CFE]"}
+        text-[#FFFFFF]`}
     >
       <Icon size={20} className="min-w-[20px]" />
       <span
-        className={`transition-all duration-200 overflow-hidden whitespace-nowrap ${
-          expanded ? "w-auto opacity-100 ml-2" : "w-0 opacity-0"
-        }`}
+        className={`transition-all duration-200 overflow-hidden whitespace-nowrap
+          ${expanded ? "w-auto opacity-100 ml-2" : "w-0 opacity-0"}
+        `}
       >
         {label}
       </span>

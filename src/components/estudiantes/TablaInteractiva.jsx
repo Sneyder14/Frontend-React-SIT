@@ -5,7 +5,7 @@ import {
     getSortedRowModel,
     flexRender,
 } from "@tanstack/react-table";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Transition } from "@headlessui/react";
 import {
     FiUser,
@@ -37,6 +37,14 @@ export default function TablaInteractiva({ columns, data, titulo }) {
         getFilteredRowModel: getFilteredRowModel(),
         getSortedRowModel: getSortedRowModel(),
     });
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === "Escape") setModalAbierto(false);
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, []);
 
     return (
         <div className="bg-white shadow-xl rounded-xl p-6 font-sans w-full">
@@ -93,8 +101,8 @@ export default function TablaInteractiva({ columns, data, titulo }) {
                                     const value = cell.getValue();
                                     const isDescripcion = columnId.toLowerCase().includes("descripcion");
                                     const texto =
-                                        typeof value === "string" && isDescripcion && value.length > 5
-                                            ? value.slice(0, 5) + "..."
+                                        typeof value === "string" && isDescripcion && value.length > 50
+                                            ? value.slice(0, 50) + "..."
                                             : value;
 
                                     return (
@@ -109,7 +117,6 @@ export default function TablaInteractiva({ columns, data, titulo }) {
                 </table>
             </div>
 
-            
             {modalAbierto && filaSeleccionada && (
                 <div className="fixed inset-0 bg-black/75 bg-opacity-50 z-50 flex items-center justify-center px-4">
                     <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md font-[roboto]">
@@ -145,7 +152,7 @@ export default function TablaInteractiva({ columns, data, titulo }) {
     );
 }
 
-// Íconos adaptativos por campo
+
 function getIconForKey(key) {
     switch (key.toLowerCase()) {
         case "nombre":
@@ -158,15 +165,23 @@ function getIconForKey(key) {
         case "tarea":
         case "actividad":
         case "titulo":
+        case "name":
             return <FiClipboard />;
         case "fecha":
         case "vencimiento":
+        case "end_date":
+        case "fecha_entrega":
             return <FiCalendar />;
         case "status":
             return <FiCheckCircle />;
         case "percentage":
         case "avance":
+        case "nota":
+        case "grade":
             return <FiPercent />;
+        case "descripcion":
+        case "description":
+            return <FiAlertCircle />;
         default:
             return <FiInfo />;
     }

@@ -1,8 +1,8 @@
-import useStudentData from "../../hooks/useStudentData";
+import useSupportExercises from '../../hooks/useSupportExercises';
 import { BookOpenCheck, AlertCircle } from "lucide-react";
 
 export default function EjerciciosDeApoyo() {
-    const { ejercicios, loading, error } = useStudentData();
+    const { ejercicios, loading, error } = useSupportExercises();
 
     if (loading)
         return <div className="p-6 text-gray-500">Cargando ejercicios...</div>;
@@ -42,10 +42,10 @@ export default function EjerciciosDeApoyo() {
                                     </span>
                                     <span
                                         className={`px-2 py-1 rounded-full font-medium ${ej.status === "completado"
-                                                ? "bg-green-100 text-green-700"
-                                                : ej.status === "pendiente"
-                                                    ? "bg-yellow-100 text-yellow-700"
-                                                    : "bg-red-100 text-red-700"
+                                            ? "bg-green-100 text-green-700"
+                                            : ej.status === "pendiente"
+                                                ? "bg-yellow-100 text-yellow-700"
+                                                : "bg-red-100 text-red-700"
                                             }`}
                                     >
                                         {ej.status}

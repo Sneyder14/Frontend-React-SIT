@@ -5,24 +5,24 @@ import {
     ChevronLeft,
     ChevronRight,
 } from "lucide-react";
-import useStudentData from "../../hooks/useStudentData";
+import { useAuth } from "../../context/AuthContext";
+import useStudentDashboardData from "../../hooks/useStudentDashboardData";
 
 export default function DashboardEstudiante() {
     const [mesActual, setMesActual] = useState("Septiembre 2025");
-    const { tareas, loading } = useStudentData();
+    const { user } = useAuth();
+    const studentId = user?.id_user;
 
-    const cursos = [
-        { course_id: "Matemáticas I" },
-        { course_id: "Programación Web" },
-        { course_id: "Física Básica" },
-    ];
+    const { tareas, cursos, calificaciones, loading } = useStudentDashboardData(studentId);
 
-    const tareasRenderizadas = tareas.map((t, index) => ({
-        id: `tarea-${t.id || index}`,
-        titulo: t.nombre || "Tarea sin título",
-        descripcion: t.descripcion || "Sin descripción",
-        fecha: t.fecha_entrega || "2025-09-01",
-    }));
+    const tareasRenderizadas = Array.isArray(tareas)
+        ? tareas.map((t, index) => ({
+            id: `tarea-${t.students_task_id || index}`,
+            titulo: `Tarea ${t.task_task_id}`,
+            descripcion: `Nota: ${t.grade || "Sin nota"}`,
+            fecha: "2025-09-01", // puedes enriquecer si tienes fecha real
+        }))
+        : [];
 
     return (
         <div className="h-full overflow-y-auto px-6 py-6 animate-fade padding-tablet font-[roboto]">
@@ -33,9 +33,6 @@ export default function DashboardEstudiante() {
                         <CalendarDays size={24} />
                         Calendario académico
                     </h2>
-                    <button className="px-4 py-2 text-sm bg-[#665BF7] text-white rounded-md hover:bg-indigo-700 transition">
-                        Nuevo evento
-                    </button>
                 </div>
 
                 {/* Filtros y búsqueda */}
@@ -48,9 +45,12 @@ export default function DashboardEstudiante() {
 
                     <select className="px-3 py-2 border border-gray-400 rounded-md text-sm text-gray-500 focus:ring-2 focus:ring-[#665BF7] outline-none font-bold font-[roboto]">
                         <option>Todos los cursos</option>
-                        {cursos.map((c) => (
-                            <option key={c.course_id}>{c.course_id}</option>
-                        ))}
+                        {Array.isArray(cursos) &&
+                            cursos.map((c, index) => (
+                                <option key={index}>
+                                    Curso {c.course_id} — Nota final: {c.final_grade || "N/A"}
+                                </option>
+                            ))}
                     </select>
 
                     <div className="relative font-[roboto]">

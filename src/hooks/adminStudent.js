@@ -10,7 +10,7 @@ export default function AdminStudent() {
   const [loading, setLoading] = useState(false);
   const [searchId, setSearchId] = useState("");
 
-  // 🔄 Cargar todos los usuarios
+  // Cargar todos los usuarios
   const fetchStudents = async () => {
     const token = localStorage.getItem("token");
     try {

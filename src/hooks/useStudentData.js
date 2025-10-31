@@ -1,64 +1,64 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
-import toast from "react-hot-toast";
 
 export default function useStudentData() {
-  const { token } = useAuth();
-
-  const [data, setData] = useState({
-    tareas: [],
-    temas: [],
-    calificaciones: [],
-    cursos: [],
-    ejercicios: [],
-    participacion: null,
-    loading: true,
-    error: "",
-  });
+  const [cursos, setCursos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { user } = useAuth();
+  const studentId = user?.id_user;
 
   useEffect(() => {
-    const fetchAll = async () => {
+    if (!studentId) return;
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("Token no encontrado. El estudiante no está autenticado.");
+      setLoading(false);
+      return;
+    }
+
+    const headers = { Authorization: `Bearer ${token}` };
+
+    const fetchCursos = async () => {
       try {
-        const headers = { Authorization: `Bearer ${token}` };
 
-        const [
-          tareasRes,
-          temasTutoriasRes,
-          calificacionesRes,
-          cursosRes,
-          ejerciciosDeApoyoRes,
-        ] = await Promise.all([
-          axios.get("http://72.61.0.205:8000/api/academics/tasks", { headers }),
-          axios.get("http://72.61.0.205:8000/api/academics/tutoring-topics", { headers }),
-          axios.get("http://72.61.0.205:8000/api/academics/task-grades", { headers }),
-          axios.get("http://72.61.0.205:8000/api/academics/course-students", { headers }),
-          axios.get("http://72.61.0.205:8000/api/academics/support-exercises", { headers }),
-        ]);
+        const resAsignados = await axios.get("http://72.61.0.205:8000/api/academics/course-students/", { headers });
+        const asignados = Array.isArray(resAsignados.data) ? resAsignados.data : [];
+        const cursosDelEstudiante = asignados.filter(c => c.student_id === studentId);
 
-        setData({
-          tareas: tareasRes.data,
-          temas: temasTutoriasRes.data,
-          calificaciones: calificacionesRes.data,
-          cursos: cursosRes.data,
-          ejercicios: ejerciciosDeApoyoRes.data,
-          participacion: null,
-          loading: false,
-          error: "",
+
+        const resCursos = await axios.get("http://72.61.0.205:8000/api/academics/courses/", { headers });
+        const cursosDisponibles = Array.isArray(resCursos.data) ? resCursos.data : [];
+
+
+        const cursosEnriquecidos = cursosDelEstudiante.map((c, index) => {
+          const detalle = cursosDisponibles.find(cd => cd.course_id === c.course_id);
+
+          return {
+            course_id: c.course_id,
+            course_name: detalle?.name || `Curso ${c.course_id}`,
+            course_description: detalle?.description || "Sin descripción",
+            enrollment_date: c.enrollment_date || "N/A",
+            credits: detalle?.credits ?? 0,
+            final_grade: c.final_grade ?? "Sin nota",
+            status: c.status || "activo",
+          };
         });
+
+
+        setCursos(cursosEnriquecidos);
+        setLoading(false);
       } catch (err) {
-        console.error("Error al cargar datos del estudiante:", err);
-        toast.error("No se pudieron cargar los datos del estudiante");
-        setData((prev) => ({
-          ...prev,
-          loading: false,
-          error: "No se pudieron cargar los datos del estudiante.",
-        }));
+        console.error("Error al cargar cursos enriquecidos:", err);
+        setError("No se pudieron cargar los cursos.");
+        setLoading(false);
       }
     };
 
-    if (token) fetchAll();
-  }, [token]);
+    fetchCursos();
+  }, [studentId]);
 
-  return data;
+  return { cursos, loading, error };
 }
